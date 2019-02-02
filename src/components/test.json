@@ -1,0 +1,27 @@
+[
+  {
+    "title": ""
+  },
+  [
+    {
+      "question": "What is your first name?",
+      "options": "",
+      "type": "input"
+    },
+    {
+      "question": "What is your last name?",
+      "options": "",
+      "type": "input"
+    },
+    {
+      "question": "What is your Gender",
+      "options": ["Female", "Male"],
+      "type": "radio"
+    },
+    {
+      "question": "Select Country",
+      "options": ["Ti", "Omicron", "Tau"],
+      "type": "select"
+    }
+  ]
+]
