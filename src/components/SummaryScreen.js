@@ -10,6 +10,7 @@ const SummaryScreen = props => {
         <br />
         <br />
         <br />
+        <h2> Thank you for participating!</h2>
         <button className="btn btn-nav" onClick={getSummaryTable}>
           <i className="fas fa-list-ul" /> View Summary
         </button>
