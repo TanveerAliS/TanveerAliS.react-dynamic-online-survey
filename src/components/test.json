@@ -22,6 +22,11 @@
       "question": "Select Country",
       "options": ["Ti", "Omicron", "Tau"],
       "type": "select"
+    },
+    {
+      "question": "Enter your place?",
+      "options": "",
+      "type": "input"
     }
   ]
 ]

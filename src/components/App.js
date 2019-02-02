@@ -1,40 +1,40 @@
 import React from "react";
+import Audio from "./Audio";
 import Main from "./Main";
 import axios from "axios";
 
 export default class App extends React.Component {
   constructor() {
     super();
-    this.quizDataSrc = "https://api.myjson.com/bins/t88ac";
+    this.surveyDataSrc = "https://api.myjson.com/bins/8csl8";
     this.state = {
       inPlay: false,
-      resultsNeeded: false,
+      summaryNeeded: false,
       title: "",
       subtitle: "",
-      timeTaken: null,
       quesIndexCurrent: 0,
       quesIndexTotal: 0,
       surveyData: [],
-      userAnswers: JSON.parse(localStorage.getItem("testObject")) || [],
-      currentFieldData: JSON.parse(localStorage.getItem("testObject"))
-        ? JSON.parse(localStorage.getItem("testObject"))[0]
+      userAnswers: JSON.parse(localStorage.getItem("surveyData")) || [],
+      currentFieldData: JSON.parse(localStorage.getItem("surveyData"))
+        ? JSON.parse(localStorage.getItem("surveyData"))[0]
         : null
     };
     this.beginPlay = this.beginPlay.bind(this);
     this.nextQuestion = this.nextQuestion.bind(this);
     this.prevQuestion = this.prevQuestion.bind(this);
     this.updateUserOptions = this.updateUserOptions.bind(this);
-    this.getResultsTable = this.getResultsTable.bind(this);
+    this.getSummaryTable = this.getSummaryTable.bind(this);
     this.resetSurvey = this.resetSurvey.bind(this);
-    this.removeResultsTable = this.removeResultsTable.bind(this);
+    this.removeSummaryTable = this.removeSummaryTable.bind(this);
   }
 
-  getResultsTable() {
-    this.setState({ resultsNeeded: true });
+  getSummaryTable() {
+    this.setState({ summaryNeeded: true });
   }
 
-  removeResultsTable() {
-    this.setState({ resultsNeeded: false });
+  removeSummaryTable() {
+    this.setState({ summaryNeeded: false });
   }
 
   beginPlay() {
@@ -42,7 +42,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.getQuizData();
+    this.getSurveyData();
   }
 
   resetSurvey() {
@@ -51,17 +51,17 @@ export default class App extends React.Component {
         inPlay: false,
         quesIndexCurrent: 0,
         userAnswers: [],
-        resultsNeeded: false
+        summaryNeeded: false
       },
       () => {
-        localStorage.setItem("testObject", JSON.stringify([]));
+        localStorage.setItem("surveyData", JSON.stringify([]));
       }
     );
   }
 
   nextQuestion() {
     const { quesIndexCurrent, userAnswers, currentFieldData } = this.state;
-    const localStorageData = JSON.parse(localStorage.getItem("testObject"));
+    const localStorageData = JSON.parse(localStorage.getItem("surveyData"));
     const currentField =
       localStorageData && localStorageData[quesIndexCurrent + 1]
         ? localStorageData[quesIndexCurrent + 1]
@@ -71,6 +71,9 @@ export default class App extends React.Component {
       parseInt(currentFieldData.id) == quesIndexCurrent &&
       currentFieldData.answer
     ) {
+      const clickSound = document.getElementById("click");
+      clickSound.volume = 0.1;
+      clickSound.play();
       const uniqueAnswers = userAnswers;
       const index = uniqueAnswers.findIndex(e => e.id === currentFieldData.id);
       index === -1
@@ -85,7 +88,7 @@ export default class App extends React.Component {
         },
         () => {
           localStorage.setItem(
-            "testObject",
+            "surveyData",
             JSON.stringify(this.state.userAnswers)
           );
         }
@@ -96,7 +99,7 @@ export default class App extends React.Component {
   }
 
   prevQuestion() {
-    const localStorageData = JSON.parse(localStorage.getItem("testObject"));
+    const localStorageData = JSON.parse(localStorage.getItem("surveyData"));
     const currentField =
       localStorageData && localStorageData[this.state.quesIndexCurrent - 1]
         ? localStorageData[this.state.quesIndexCurrent - 1]
@@ -125,13 +128,16 @@ export default class App extends React.Component {
     });
   }
 
-  getQuizData() {
+  getSurveyData() {
     axios
-      .get(this.quizDataSrc)
+      .get(this.surveyDataSrc)
       .then(res => {
         this.setState({ surveyData: res.data }, () => {
-          this.setState({ title: this.state.surveyData[0].title });
-          this.setState({ quesIndexTotal: this.state.surveyData[1].length });
+          this.setState({
+            title: this.state.surveyData[0].title,
+            subtitle: this.state.surveyData[0].subtitle,
+            quesIndexTotal: this.state.surveyData[1].length
+          });
         });
       })
       .catch(error => {
@@ -149,9 +155,8 @@ export default class App extends React.Component {
       quesIndexCurrent,
       quesIndexTotal,
       surveyData,
-      resultsNeeded,
+      summaryNeeded,
       subtitle,
-      timeTaken,
       currentFieldData,
       title,
       userAnswers
@@ -159,21 +164,20 @@ export default class App extends React.Component {
     return (
       <div className="guidelines container">
         <section className="section-hud" />
+        <Audio />
         <Main
           beginPlay={this.beginPlay}
           inPlay={inPlay}
           nextQuestion={this.nextQuestion}
           prevQuestion={this.prevQuestion}
-          getResultsTable={this.getResultsTable}
-          removeResultsTable={this.removeResultsTable}
+          getSummaryTable={this.getSummaryTable}
+          removeSummaryTable={this.removeSummaryTable}
           quesIndexCurrent={quesIndexCurrent}
           quesIndexTotal={quesIndexTotal}
           surveyData={surveyData}
-          resultsNeeded={resultsNeeded}
+          summaryNeeded={summaryNeeded}
           resetSurvey={this.resetSurvey}
-          setTimeTaken={this.setTimeTaken}
           subtitle={subtitle}
-          timeTaken={timeTaken}
           title={title}
           currentFieldData={currentFieldData}
           updateUserOptions={this.updateUserOptions}
