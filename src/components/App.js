@@ -6,7 +6,7 @@ import axios from "axios";
 export default class App extends React.Component {
   constructor() {
     super();
-    this.surveyDataSrc = "https://api.myjson.com/bins/8csl8";
+    this.surveyDataSrc = "https://api.myjson.com/bins/e6xhc";
     this.state = {
       inPlay: false,
       summaryNeeded: false,
