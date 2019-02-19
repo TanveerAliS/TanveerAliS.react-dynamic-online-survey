@@ -1,7 +1,9 @@
 ## Run application in local system
 
   `git clone https://github.com/TanveerAliS/react-dynamic-online-survey.git`
+  
   `cd react-dynamic-online-survey`
+  
   `npm install` or `yarn install`
  
  ### `npm start`
